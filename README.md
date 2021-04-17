@@ -17,7 +17,7 @@ One Time Pad Implementation with a GUI
   This will start the application and run the setup wizard for the first time.
 
 ## Screenshots
-<img src="https://github.com/f34rl00/pitch-perfect/blob/main/screenshots/image1.png" width="640">
+<img src="https://github.com/f34rl00/pitch-perfect/blob/master/screenshots/image1.png" width="640">
 
 ## Documentation
 Nothing much :/
