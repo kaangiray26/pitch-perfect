@@ -1,0 +1,53 @@
+<RCC>
+  <qresource prefix="Exit">
+    <file>window-close-symbolic.symbolic.png</file>
+  </qresource>
+  <qresource prefix="Reset">
+    <file>touch-disabled-symbolic.symbolic.png</file>
+  </qresource>
+  <qresource prefix="Save">
+    <file>documents.png</file>
+  </qresource>
+  <qresource prefix="Import Contacts">
+    <file>address-book-new-symbolic.symbolic.png</file>
+  </qresource>
+  <qresource prefix="Add Contact">
+    <file>contact-new-symbolic.symbolic.png</file>
+  </qresource>
+  <qresource prefix="Address Book">
+    <file>x-office-address-book-symbolic.symbolic.png</file>
+  </qresource>
+  <qresource prefix="Save">
+    <file>document-save.png</file>
+  </qresource>
+  <qresource prefix="Security">
+    <file>network-wireless-encrypted-symbolic.symbolic.png</file>
+  </qresource>
+  <qresource prefix="Mail Send">
+    <file>mail-send-symbolic.symbolic.png</file>
+  </qresource>
+  <qresource prefix="Wizard">
+    <file>start-here-symbolic.symbolic.png</file>
+  </qresource>
+  <qresource prefix="Manager">
+    <file>preferences-other-symbolic.symbolic.png</file>
+  </qresource>
+  <qresource prefix="Import">
+    <file>document-save-symbolic.symbolic.png</file>
+  </qresource>
+  <qresource prefix="Export">
+    <file>document-send-symbolic.symbolic.png</file>
+  </qresource>
+  <qresource prefix="Documentation">
+    <file>view-dual-symbolic.symbolic.png</file>
+  </qresource>
+  <qresource prefix="About">
+    <file>help-about-symbolic.symbolic.png</file>
+  </qresource>
+  <qresource prefix="Write">
+    <file>document-edit-symbolic.symbolic.png</file>
+  </qresource>
+  <qresource prefix="Get Messages">
+    <file>view-refresh-symbolic.symbolic.png</file>
+  </qresource>
+</RCC>

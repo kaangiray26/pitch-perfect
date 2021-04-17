@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QTreeWidget" name="treeWidget">
+      <property name="contextMenuPolicy">
+       <enum>Qt::CustomContextMenu</enum>
+      </property>
+      <property name="sortingEnabled">
+       <bool>false</bool>
+      </property>
+      <column>
+       <property name="text">
+        <string>Name</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string> Email Address</string>
+       </property>
+      </column>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuF_le">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionAdd_Contact"/>
+    <addaction name="actionImport_Contacts"/>
+    <addaction name="actionExport_Contacts"/>
+    <addaction name="actionClose"/>
+   </widget>
+   <addaction name="menuF_le"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>16</width>
+     <height>16</height>
+    </size>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextBesideIcon</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionAdd_Contact"/>
+   <addaction name="separator"/>
+   <addaction name="actionImport_Contacts"/>
+   <addaction name="separator"/>
+   <addaction name="actionExport_Contacts"/>
+  </widget>
+  <action name="actionAdd_Contact">
+   <property name="icon">
+    <iconset resource="resources/resources.qrc">
+     <normaloff>:/Add Contact/contact-new-symbolic.symbolic.png</normaloff>:/Add Contact/contact-new-symbolic.symbolic.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Contact</string>
+   </property>
+  </action>
+  <action name="actionImport_Contacts">
+   <property name="icon">
+    <iconset resource="resources/resources.qrc">
+     <normaloff>:/Import Contacts/address-book-new-symbolic.symbolic.png</normaloff>:/Import Contacts/address-book-new-symbolic.symbolic.png</iconset>
+   </property>
+   <property name="text">
+    <string>Import Contacts</string>
+   </property>
+  </action>
+  <action name="actionExport_Contacts">
+   <property name="icon">
+    <iconset resource="resources/resources.qrc">
+     <normaloff>:/Export/document-send-symbolic.symbolic.png</normaloff>:/Export/document-send-symbolic.symbolic.png</iconset>
+   </property>
+   <property name="text">
+    <string>Export Contacts</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="icon">
+    <iconset resource="resources/resources.qrc">
+     <normaloff>:/Exit/window-close-symbolic.symbolic.png</normaloff>:/Exit/window-close-symbolic.symbolic.png</iconset>
+   </property>
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="resources/resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>
