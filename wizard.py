@@ -99,7 +99,7 @@ class setup:
     otp_keys.append("signature = %s" %(secrets.token_hex(16)))
     for i in range(0, 1024):
       otp_keys.append(secrets.token_hex(512))
-    with open(n(os.path.join("otp_keys","%s-otp.asc" %(self.username))), mode='wt', encoding='utf-8') as f:
+    with open(n(os.path.join("otp_keys","%s-otp.asc" %(self.username))), "w") as f:
       f.write(os.linesep.join(otp_keys))
     toAdd["OTP"] = {self.username: 1}
     self.data.update(toAdd)

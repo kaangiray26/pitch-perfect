@@ -724,7 +724,6 @@ class Window1(QMainWindow, MainWindow):
                 key = origin.read()
                 with open(n(os.path.join("otp_keys","%s" % (filename))), "w") as f:
                     f.write(key)
-                    f.close()
             self.statusbar.showMessage("Key imported successfully.", 3000)
         except FileNotFoundError:
             self.statusbar.showMessage("Key not imported.", 3000)
