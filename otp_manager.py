@@ -44,4 +44,4 @@ class OTPManager:
 
     def export_key(self):
         key, offset = self.find_key(self.credentials("username"))
-        return (str(key), n(os.path.join("otp_keys","%s-otp.asc" % (self.credentials("username")))), offset)
+        return ("".join(key), n(os.path.join("otp_keys","%s-otp.asc" % (self.credentials("username")))), offset)
