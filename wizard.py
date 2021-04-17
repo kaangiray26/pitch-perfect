@@ -100,8 +100,7 @@ class setup:
     for i in range(0, 1024):
       otp_keys.append(secrets.token_hex(512))
     with open(n(os.path.join("otp_keys","%s-otp.asc" %(self.username))), mode='wt', encoding='utf-8') as f:
-      f.write("\n".join(otp_keys))
-      f.close()
+      f.write(os.linesep.join(otp_keys))
     toAdd["OTP"] = {self.username: 1}
     self.data.update(toAdd)
     with open('config.json', 'w') as conf:
