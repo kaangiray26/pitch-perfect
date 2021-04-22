@@ -735,9 +735,8 @@ class Window1(QMainWindow, MainWindow):
         self.d = FileDialog()
         location = self.d.getSaveFileName(self.d, 'Save File', filename)
         try:
-            with open(location[0], "w") as f:
+            with open(location[0], "w", ) as f:
                 f.write(pubkey)
-                f.close()
             self.statusbar.showMessage("Key exported successfully.", 3000)
             QMessageBox.about(self, 'Important', "Do not forget to save your offset: \n % s" % (offset))
         except FileNotFoundError:
