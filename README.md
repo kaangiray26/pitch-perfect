@@ -32,6 +32,7 @@ Nothing much :/
 - [ ] Google application password needed for login
 - [ ] Json for otp keys
 - [ ] Program update function
+- [ ] Bug and crash report sender ?
 
 ### Have you seen the movie?
 No, I haven't.
