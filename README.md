@@ -31,6 +31,7 @@ Nothing much :/
 - [ ] Menubar not visible on mac os
 - [ ] Google application password needed for login
 - [ ] Json for otp keys
+- [ ] Program update function
 
 ### Have you seen the movie?
 No, I haven't.
