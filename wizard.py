@@ -21,7 +21,6 @@ class setup:
     if "config.json" not in os.listdir("."):
       with open('config.json', 'a+') as conf:
         conf.write("{}")
-        conf.close()
     if "downloaded" not in os.listdir("."):
       os.mkdir("downloaded")
     if "pgp_keys" not in os.listdir("."):
@@ -94,14 +93,14 @@ class setup:
 
   def otp_setup(self):
     self.refresh_data()
-    otp_keys = []
+    otp_keys = {}
     toAdd = {}
-    otp_keys.append("signature = %s" %(secrets.token_hex(16)))
-    for i in range(0, 1024):
-      otp_keys.append(secrets.token_hex(512))
-    with open(n(os.path.join("otp_keys","%s-otp.asc" %(self.username))), "w") as f:
-      f.write(os.linesep.join(otp_keys))
-    toAdd["OTP"] = {self.username: 1}
+    otp_keys["signature"] = secrets.token_hex(16)
+    for i in range(0, 2048):
+      otp_keys[i] = secrets.token_hex(512)
+    with open(n(os.path.join("otp_keys", "%s-otp.json" % (self.username))), "w") as conf:
+        json.dump(otp_keys, conf, indent=4)
+    toAdd["OTP"] = {self.username: 0}
     self.data.update(toAdd)
     with open('config.json', 'w') as conf:
       json.dump(self.data, conf, indent=4)

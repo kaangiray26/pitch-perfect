@@ -77,9 +77,9 @@ class outbox:
     for k in self.otp_keys:
       if email_addr in k:
         offset = self.data["OTP"][email_addr]
-        with open(n(os.path.join('otp_keys',k)), 'r') as f:
-          key = f.read().splitlines()[offset]
-        return key
+        with open(n(os.path.join('otp_keys', k)),) as f:
+          keydata = json.load(f)
+          return keydata[str(offset)]
 
   # Update otp offset
   def update_offset(self, email_addr):

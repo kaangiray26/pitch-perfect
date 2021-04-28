@@ -19,9 +19,9 @@ class OTPManager:
         for k in self.available_keys:
             if email in k:
                 offset = self.data["OTP"][email]
-                with open(n(os.path.join('otp_keys',k)), 'r') as f:
-                    key = f.read().splitlines(offset)
-                return key, offset
+                with open(n(os.path.join('otp_keys', k)),) as f:
+                    keydata = json.load(f)
+                    return keydata[str(offset)], offset
 
     def credentials(self, arg):
         self.refresh_data()
@@ -43,5 +43,10 @@ class OTPManager:
             json.dump(self.data, conf, indent=4)
 
     def export_key(self):
-        key, offset = self.find_key(self.credentials("username"))
-        return ("".join(key), n(os.path.join("otp_keys", "%s-otp.asc" % (self.credentials("username")))), offset)
+        self.refresh_data()
+        offset = self.data["OTP"][self.credentials("username")]
+        for k in self.available_keys:
+            if self.credentials("username") in k:
+                with open(n(os.path.join('otp_keys', k)),) as f:
+                    keydata = json.load(f)
+        return (keydata, n(os.path.join("otp_keys", "%s-otp.json" % (self.credentials("username")))), offset)

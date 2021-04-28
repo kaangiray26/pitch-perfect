@@ -40,9 +40,9 @@ class decryption:
     self.refresh_data()
     for k in self.otp_keys:
       if email_addr in k:
-        with open(n(os.path.join('otp_keys',k)), 'r') as f:
-          key = f.read().splitlines()[int(offset)]
-        return key
+        with open(n(os.path.join('otp_keys', k)),) as f:
+          keydata = json.load(f)
+          return keydata[str(offset)]
 
   # Encrypt with otp
   def otp_decrypt(self, encrypted_message, from_addr, offset):
