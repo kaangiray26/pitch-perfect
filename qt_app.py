@@ -478,6 +478,7 @@ class Window1(QMainWindow, MainWindow):
         self.retranslateUi(self)
 
         self.itemBlockSize = 25
+        self.menubar.setNativeMenuBar(False)
 
         self.inboxSc = QShortcut(QKeySequence('Alt+1'), self)
         self.mailSc = QShortcut(QKeySequence('Alt+2'), self)
