@@ -1,0 +1,14 @@
+# pycache
+__pycache__
+
+# otp keys
+otp_keys
+
+# pgp keys
+pgp_keys
+
+# config
+config.json
+
+# contacts
+contacts.json
