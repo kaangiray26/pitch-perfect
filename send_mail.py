@@ -127,9 +127,9 @@ class outbox:
       #
 
       pgp_message = pgpy.PGPMessage.new(content)
+      pubkey  = self.find_public(m_receiver_email)
       privkey = self.find_secret(m_sender_email)
       with privkey.unlock(self.credentials("passphrase")):
-        pubkey = privkey.pubkey
         pgp_message |= privkey.sign(pgp_message)
       encrypted = pubkey.encrypt(pgp_message)
       enc_part.set_payload(str(encrypted))

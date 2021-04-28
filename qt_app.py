@@ -30,6 +30,23 @@ from addressBook import contactBook, unsupportedTypeError
 from pgp_manager import PGPManager
 from otp_manager import OTPManager
 
+def hardReset():
+    pgp_keys = os.listdir("pgp_keys")
+    otp_keys = os.listdir("otp_keys")
+    downloaded = os.listdir("downloaded")
+    if "__pycache__" in os.listdir("."):
+        shutil.rmtree("__pycache__", ignore_errors=True)
+    if "config.json" in os.listdir("."):
+        os.remove("config.json")
+    if "contacts.json" in os.listdir("."):
+        os.remove("contacts.json")
+    for k in pgp_keys:
+        os.remove(n(os.path.join("pgp_keys", k)))
+    for k in otp_keys:
+        os.remove(n(os.path.join("otp_keys", k)))
+    for k in downloaded:
+        os.remove(n(os.path.join("downloaded", k)))
+
 class AboutScreen(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -77,21 +94,7 @@ class ResetDialog(QDialog):
         self.buttonBox.rejected.connect(self.reject)
 
     def resetAction(self):
-        pgp_keys = os.listdir("pgp_keys")
-        otp_keys = os.listdir("otp_keys")
-        downloaded = os.listdir("downloaded")
-        os.chmod("config.json", 0o777)
-        os.chmod("contacts.json", 0o777)
-        os.remove("config.json")
-        os.remove("contacts.json")
-        if "__pycache__" in os.listdir("."):
-            shutil.rmtree("__pycache__", ignore_errors=True)
-        for k in pgp_keys:
-            os.remove(n(os.path.join("pgp_keys",k)))
-        for k in otp_keys:
-            os.remove(n(os.path.join("otp_keys",k)))
-        for k in downloaded:
-            os.remove(n(os.path.join("downloaded",k)))
+        hardReset()
         QMessageBox.about(self, "Result", "All settings removed.")
         exit()
 
@@ -749,6 +752,11 @@ class Window1(QMainWindow, MainWindow):
         exit()
 
 if __name__ == "__main__":
+    arg = sys.argv[1:]
+    if "--reset" in arg:
+        hardReset()
+        print("All settings removed.")
+        exit()
     app = QApplication(sys.argv)
     win = Window1()
     win.show()
