@@ -26,8 +26,8 @@ class inbox():
     self.mail.login(self.credentials("username"), self.credentials("password"))
     self.mail.select('inbox')
 
-    self.emails = []
-    self.emailset_conditions = {}
+    self.local_emails = []
+    self.loaded = False
     self.doExit = False
 
   def check_config(self):
@@ -38,6 +38,9 @@ class inbox():
   def refresh_data(self):
     with open('config.json',) as self.f:
       self.data = json.load(self.f)
+    with open(os.path.join('archive','local.json'),) as self.l:
+      self.local = json.load(self.l)
+      self.local_emails = self.local['EMAILS']
 
   def getServerSettings(self):
     self.emailService = self.credentials("server")
@@ -60,31 +63,32 @@ class inbox():
       return self.data["PGP"]["id"]
     elif arg == "passphrase":
       return self.data["PGP"]["passphrase"]
+    elif arg == "init":
+      return self.data['INIT']
 
   def refresh_mail(self):
-    self.emails = []
-    self.emailset_conditions = {}
+    self.loaded = False
+    self.refresh_data()
     ids = []
+    if self.credentials("init") == 0:
+      arg = 'ALL'
+      command = "self.local_emails.append([(mail_subject, mail_from, mail_date), content_type, mail_content, x_header, x_magicnum, attachment_name, attachment])"
+      self.data['INIT'] = 1
+    else:
+      arg = '(UNSEEN)'
+      command = "self.local_emails.insert(0,[(mail_subject, mail_from, mail_date), content_type, mail_content, x_header, x_magicnum, attachment_name, attachment])"
+
     self.mail.select('inbox')
-    status, data = self.mail.search(None, 'ALL')
+    status, data = self.mail.search(None, arg)
     for block in data:
       ids += block.split()
     ids.reverse()
-    self.emails.append([])
-    self.emailset_conditions[0] = False
-    pageIndex = 0
-    itemIndex = 0
-    for item in ids:
+    if arg=='(UNSEEN)':
+      print("New messages:",len(ids))
+    for item in ids[0:100]:
       if self.doExit:
         print("exited")
         return
-      if itemIndex == 25:
-          self.emailset_conditions[pageIndex] = True
-          self.emailset_conditions[pageIndex+1] = False
-          pageIndex += 1
-          itemIndex = 0
-          self.emails.append([])
-
       status, data = self.mail.fetch(item, '(RFC822)')
       for response_part in data:
         if isinstance(response_part, tuple):
@@ -110,7 +114,6 @@ class inbox():
 
           # Mail content parsing section
           i = 0
-          # print("")
           upperType = None
           attachment = None
           attachment_name = None
@@ -170,11 +173,15 @@ class inbox():
                 if attachment_type == "base64":
                   attachment = base64.b64decode(attachment_content)
             i += 1
-          self.emails[pageIndex].append(
-            [(mail_subject, mail_from, mail_date), content_type, mail_content, x_header, x_magicnum, attachment_name, attachment])
-          itemIndex += 1
-    self.emailset_conditions[pageIndex]=True
-    print("ended.")
+          exec(command)
+    with open(os.path.join('archive','local.json'), 'w') as conf:
+      self.local['EMAILS'] = self.local_emails
+      json.dump(self.local, conf, indent=4)
+    with open('config.json', 'w') as conf:
+      json.dump(self.data, conf, indent=4)
+    self.loaded = True
+    print("Synchronization ended.")
+    return
 
   def openmail(self, msg):
     #do thing

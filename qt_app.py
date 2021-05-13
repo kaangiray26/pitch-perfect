@@ -5,6 +5,7 @@ import sys
 import json
 import platform
 import shutil
+import time # -> temporary
 from threading import Thread
 from os.path import normpath as n
 from PyQt5.QtWidgets import (
@@ -18,17 +19,17 @@ from PyQt5.QtCore import QFileInfo, Qt, QUrl, QSize
 from PyQt5.Qt import QDesktopServices, QKeySequence
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.uic import loadUi
-from modern_window import Ui_MainWindow as MainWindow
-from message_modern import Ui_MainWindow as MessageWindow
-from addressbook_modern import Ui_MainWindow as AddressBookWindow
-from wizardError_dialog import Ui_Dialog as wizardErrorDialog
-from get_mail import inbox, WizardError
-from send_mail import outbox, AuthenticationError
-from wizard import setup
-from decrypt_message import decryption, DecryptionError
-from addressBook import contactBook, unsupportedTypeError
-from pgp_manager import PGPManager
-from otp_manager import OTPManager
+from lib.modern_window import Ui_MainWindow as MainWindow
+from lib.message_modern import Ui_MainWindow as MessageWindow
+from lib.addressbook_modern import Ui_MainWindow as AddressBookWindow
+from lib.wizardError_dialog import Ui_Dialog as wizardErrorDialog
+from lib.get_mail import inbox, WizardError
+from lib.send_mail import outbox, AuthenticationError
+from lib.wizard import setup
+from lib.decrypt_message import decryption, DecryptionError
+from lib.addressBook import contactBook, unsupportedTypeError
+from lib.pgp_manager import PGPManager
+from lib.otp_manager import OTPManager
 
 def hardReset():
     pgp_keys = os.listdir("pgp_keys")
@@ -40,6 +41,8 @@ def hardReset():
         os.remove("config.json")
     if "contacts.json" in os.listdir("."):
         os.remove("contacts.json")
+    if "local.json" in os.listdir("archive"):
+        os.remove(os.path.join("archive","local.json"))
     for k in pgp_keys:
         os.remove(n(os.path.join("pgp_keys", k)))
     for k in otp_keys:
@@ -599,14 +602,14 @@ class Window1(QMainWindow, MainWindow):
         self.treeWidget.clear()
         l = []
         ind = int(self.pageIndex.text())
-        if ind > len(self.inbox.emails):
+        if (ind-1) >= len(self.inbox.local_emails)/25:
             self.goBack()
             return
-        while self.inbox.emailset_conditions[ind-1] != True:
-            pass
-        emails = self.inbox.emails[ind-1]
+        emails = self.inbox.local_emails[(ind-1)*25 : ind*25]
         for item in emails:
-            l.append(QTreeWidgetItem(item[0]))
+            time.sleep(0.001)
+            l.append(QTreeWidgetItem(item[0]))  # -> segmentation fault
+            pass
         self.treeWidget.addTopLevelItems(l)
         self.statusbar.clearMessage()
         return
@@ -619,10 +622,10 @@ class Window1(QMainWindow, MainWindow):
         self.inbox.doExit = False
         self.thread = Thread(target=self.inbox.refresh_mail, daemon=True)
         self.thread.start()
-        while len(self.inbox.emails) < 1:
+        while (self.inbox.loaded) != True:
             pass
+        print("inbox is loaded!\n")
         Thread(target=self.showMessages, daemon=True).start()
-        # self.inbox.refresh_mail()
 
     def getContacts(self):
         self.contactBook = contactBook()
@@ -638,16 +641,17 @@ class Window1(QMainWindow, MainWindow):
         self.statusbar.showMessage("Opening message...")
         index = self.treeWidget.indexOfTopLevelItem(item[0])
         pi = int(self.pageIndex.text())-1
-        text_type = self.inbox.emails[pi][index][1]
-        self.text = self.inbox.emails[pi][index][2]
-        self.attachment_name = self.inbox.emails[pi][index][5]
-        self.attachment = self.inbox.emails[pi][index][6]
+        ei = pi*25+index
+        text_type = self.inbox.local_emails[ei][1]
+        self.text = self.inbox.local_emails[ei][2]
+        self.attachment_name = self.inbox.local_emails[ei][5]
+        self.attachment = self.inbox.local_emails[ei][6]
         
-        xheader   = self.inbox.emails[pi][index][3]
-        self.xmagicnumber = self.inbox.emails[pi][index][4]
-        self.mail_subjectlabel.setText(self.inbox.emails[pi][index][0][0])
-        self.mail_fromlabel.setText(self.inbox.emails[pi][index][0][1])
-        self.mail_date.setText(self.inbox.emails[pi][index][0][2])
+        xheader   = self.inbox.local_emails[ei][3]
+        self.xmagicnumber = self.inbox.local_emails[ei][4]
+        self.mail_subjectlabel.setText(self.inbox.local_emails[ei][0][0])
+        self.mail_fromlabel.setText(self.inbox.local_emails[ei][0][1])
+        self.mail_date.setText(self.inbox.local_emails[ei][0][2])
 
         if self.attachment_name == None:
             self.attachmentButton.hide()

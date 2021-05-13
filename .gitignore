@@ -12,3 +12,6 @@ config.json
 
 # contacts
 contacts.json
+
+# vscode
+.vscode
