@@ -250,7 +250,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Pitch Perfect GUI"))
         self.treeWidget.headerItem().setText(0, _translate("MainWindow", "Subject"))
         self.treeWidget.headerItem().setText(1, _translate("MainWindow", "Sender"))
         self.treeWidget.headerItem().setText(2, _translate("MainWindow", "Date"))
