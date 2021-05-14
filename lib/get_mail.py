@@ -85,7 +85,7 @@ class inbox():
     ids.reverse()
     if arg=='(UNSEEN)':
       print("New messages:",len(ids))
-    for item in ids[0:100]:
+    for item in ids:
       if self.doExit:
         print("exited")
         return
