@@ -33,6 +33,7 @@ Nothing much :/
 - [x] Program update function
 - [ ] Email drop down recommendations in to: section while writing an email
 - [ ] Automatically add addresses from an email to contacts
+- [ ] Send pgp public key within the app
 
 ### Have you seen the movie?
 No, I haven't.
