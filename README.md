@@ -14,8 +14,9 @@ One Time Pad Implementation with a GUI
     
 ## Usage
     $ python qt_app.py
-  This will start the application and run the setup wizard for the first time.
-
+  This will start the application and run the setup wizard for the first time.  
+### **Note:** This program is not intended to be used as an email client, therefore **creating a new email account is recommended.**
+ 
 ## Screenshots
 <img src="https://github.com/f34rl00/pitch-perfect/blob/master/screenshots/image1.png" width="640">
 
@@ -23,8 +24,6 @@ One Time Pad Implementation with a GUI
 Nothing much :/
 
 ## TO-DO List
-- [ ] Remove used otp-key from the sender's key-list  
-- [ ] Terminate old messages function sent to the receiver with a signature  
 - [ ] Other mailbox fuctions  
 - [x] Write email server settings in config file
 - [x] Email text length limit for otp encryption
@@ -33,6 +32,8 @@ Nothing much :/
 - [x] Json for otp keys
 - [ ] Program update function
 - [ ] Bug and crash report sender ?
+- [ ] Email drop down recommendations in to: section while writing an email
+- [ ] Automatically add addresses from an email to contacts
 
 ### Have you seen the movie?
 No, I haven't.
