@@ -2,6 +2,9 @@
   <qresource prefix="Exit">
     <file>window-close-symbolic.symbolic.png</file>
   </qresource>
+  <qresource prefix="Update">
+    <file>system-run-symbolic.symbolic.png</file>
+  </qresource>
   <qresource prefix="Reset">
     <file>touch-disabled-symbolic.symbolic.png</file>
   </qresource>

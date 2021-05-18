@@ -310,6 +310,8 @@
     <addaction name="actionWizard"/>
     <addaction name="separator"/>
     <addaction name="actionReset"/>
+    <addaction name="separator"/>
+    <addaction name="actionUpdate"/>
    </widget>
    <addaction name="menuMailbox"/>
    <addaction name="menuPgp"/>
@@ -467,6 +469,15 @@
    </property>
    <property name="text">
     <string>Reset</string>
+   </property>
+  </action>
+  <action name="actionUpdate">
+   <property name="icon">
+    <iconset resource="resources/resources.qrc">
+     <normaloff>:/Update/system-run-symbolic.symbolic.png</normaloff>:/Update/system-run-symbolic.symbolic.png</iconset>
+   </property>
+   <property name="text">
+    <string>Update</string>
    </property>
   </action>
  </widget>

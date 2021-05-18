@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui/modern_window.ui'
+# Form implementation generated from reading ui file '../ui/modern_window.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -214,6 +214,11 @@ class Ui_MainWindow(object):
         icon9.addPixmap(QtGui.QPixmap(":/Reset/touch-disabled-symbolic.symbolic.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionReset.setIcon(icon9)
         self.actionReset.setObjectName("actionReset")
+        self.actionUpdate = QtWidgets.QAction(MainWindow)
+        icon10 = QtGui.QIcon()
+        icon10.addPixmap(QtGui.QPixmap(":/Update/system-run-symbolic.symbolic.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionUpdate.setIcon(icon10)
+        self.actionUpdate.setObjectName("actionUpdate")
         self.menuMailbox.addAction(self.actionGet_Messages)
         self.menuMailbox.addSeparator()
         self.menuMailbox.addAction(self.actionWrite)
@@ -234,6 +239,8 @@ class Ui_MainWindow(object):
         self.menuHelp.addAction(self.actionWizard)
         self.menuHelp.addSeparator()
         self.menuHelp.addAction(self.actionReset)
+        self.menuHelp.addSeparator()
+        self.menuHelp.addAction(self.actionUpdate)
         self.menubar.addAction(self.menuMailbox.menuAction())
         self.menubar.addAction(self.menuPgp.menuAction())
         self.menubar.addAction(self.menuOtp.menuAction())
@@ -281,5 +288,6 @@ class Ui_MainWindow(object):
         self.actionImport_otpKeys.setText(_translate("MainWindow", "Import Keys"))
         self.actionExport_otpKeys.setText(_translate("MainWindow", "Export Keys"))
         self.actionReset.setText(_translate("MainWindow", "Reset"))
+        self.actionUpdate.setText(_translate("MainWindow", "Update"))
 from PyQt5 import QtWebEngineWidgets
 import resources_rc

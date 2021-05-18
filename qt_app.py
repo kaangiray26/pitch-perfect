@@ -5,7 +5,8 @@ import sys
 import json
 import platform
 import shutil
-import time # -> temporary
+import time
+import requests
 from threading import Thread
 from os.path import normpath as n
 from PyQt5.QtWidgets import (
@@ -537,6 +538,23 @@ class Window1(QMainWindow, MainWindow):
         self.actionReset.triggered.connect(self.doReset)
         self.rightButton.clicked.connect(self.goNext)
         self.leftButton.clicked.connect(self.goBack)
+        self.actionUpdate.triggered.connect(self.updateSelf)
+
+    def updateSelf(self):
+        with open(n(os.path.join("lib","version"))) as v:
+            version = v.read()
+        check_version = requests.get(
+            "https://raw.githubusercontent.com/f34rl00/pitch-perfect/master/lib/VERSION").text
+        print(float(version), float(check_version))
+        if (check_version > version):
+            QMessageBox.about(self, "Security", "Performing update...\nThe program will close itself.")
+            os.execv(sys.executable, ['python', "updater.py", "1.1"])
+            self.close()
+
+        else:
+            QMessageBox.about(self, "Security", "You are already up-to-date!")
+        return
+
 
     def goBack(self):
         now = self.pageIndex.text()
