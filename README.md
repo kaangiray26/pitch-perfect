@@ -31,7 +31,6 @@ Nothing much :/
 - [ ] Google application password needed for login
 - [x] Json for otp keys
 - [x] Program update function
-- [ ] Bug and crash report sender ?
 - [ ] Email drop down recommendations in to: section while writing an email
 - [ ] Automatically add addresses from an email to contacts
 
