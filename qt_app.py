@@ -509,6 +509,15 @@ class Window1(QMainWindow, MainWindow):
             self.getMessages()
             self.getContacts()
             self.decryption = decryption()
+            if "--updatedTrue" in arg:
+                QMessageBox.about(self, "Security",
+                                  "Updated Successfully!")
+            elif "--updatedFalse" in arg:
+                QMessageBox.about(self, "Security", "A Problem Occured While Updating\nPlease try again later!")
+            elif "--updatedEmpty" in arg:
+                QMessageBox.about(
+                    self, "Security", "You're already up-to-date.\nNo changes were made.")
+
         except WizardError as e:
             self.d = Dialog1(self)
             self.d.textBrowser.setText(str(e))
@@ -542,17 +551,15 @@ class Window1(QMainWindow, MainWindow):
 
     def updateSelf(self):
         with open(n(os.path.join("lib","VERSION"))) as v:
-            version = v.read()
+            self_version = v.read()
         check_version = requests.get(
             "https://raw.githubusercontent.com/f34rl00/pitch-perfect/master/lib/VERSION").text
-        print(float(version), float(check_version))
-        if (check_version > version):
-            QMessageBox.about(self, "Security", "Performing update...\nThe program will close itself.")
-            os.execv(sys.executable, ['python', "updater.py", "1.1"])
+        if (float(check_version) > float(self_version)):
+            QMessageBox.about(self, "Security", "A new version is available: Version %s\nPerforming update...\nThe program will close itself." %(check_version.strip()))
+            os.execv(sys.executable, ['python', "updater.py", check_version, self_version])
             self.close()
-
         else:
-            QMessageBox.about(self, "Security", "You are already up-to-date!")
+            QMessageBox.about(self, "Security", "You are already up-to-date!\nVersion: %s" %(self_version))
         return
 
 
