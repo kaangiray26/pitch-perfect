@@ -1,1 +1,5 @@
-
+{
+    "1.1" : [
+        "https://raw.githubusercontent.com/f34rl00/pitch-perfect/master/qt_app.py"
+    ]
+}
