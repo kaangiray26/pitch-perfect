@@ -541,7 +541,7 @@ class Window1(QMainWindow, MainWindow):
         self.actionUpdate.triggered.connect(self.updateSelf)
 
     def updateSelf(self):
-        with open(n(os.path.join("lib","version"))) as v:
+        with open(n(os.path.join("lib","VERSION"))) as v:
             version = v.read()
         check_version = requests.get(
             "https://raw.githubusercontent.com/f34rl00/pitch-perfect/master/lib/VERSION").text
