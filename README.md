@@ -31,7 +31,7 @@ Nothing much :/
 - [ ] Google application password needed for login
 - [x] Json for otp keys
 - [x] Program update function
-- [ ] Email drop down recommendations in to: section while writing an email
+- [x] Email drop down recommendations in to: section while writing an email
 - [x] Automatically add addresses from an email to contacts
 - [ ] Send pgp public key within the app
 
