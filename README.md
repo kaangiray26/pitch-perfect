@@ -32,7 +32,7 @@ Nothing much :/
 - [x] Json for otp keys
 - [x] Program update function
 - [ ] Email drop down recommendations in to: section while writing an email
-- [ ] Automatically add addresses from an email to contacts
+- [x] Automatically add addresses from an email to contacts
 - [ ] Send pgp public key within the app
 
 ### Have you seen the movie?
