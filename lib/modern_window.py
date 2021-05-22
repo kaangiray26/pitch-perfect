@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '../ui/modern_window.ui'
+# Form implementation generated from reading ui file 'ui/modern_window.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -219,6 +219,11 @@ class Ui_MainWindow(object):
         icon10.addPixmap(QtGui.QPixmap(":/Update/system-run-symbolic.symbolic.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionUpdate.setIcon(icon10)
         self.actionUpdate.setObjectName("actionUpdate")
+        self.actionSend_Keys = QtWidgets.QAction(MainWindow)
+        icon11 = QtGui.QIcon()
+        icon11.addPixmap(QtGui.QPixmap(":/Mail Send/mail-send-symbolic.symbolic.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionSend_Keys.setIcon(icon11)
+        self.actionSend_Keys.setObjectName("actionSend_Keys")
         self.menuMailbox.addAction(self.actionGet_Messages)
         self.menuMailbox.addSeparator()
         self.menuMailbox.addAction(self.actionWrite)
@@ -229,6 +234,8 @@ class Ui_MainWindow(object):
         self.menuPgp.addAction(self.actionImport_pgpKeys)
         self.menuPgp.addSeparator()
         self.menuPgp.addAction(self.actionExport_pgpKeys)
+        self.menuPgp.addSeparator()
+        self.menuPgp.addAction(self.actionSend_Keys)
         self.menuOtp.addAction(self.actionImport_otpKeys)
         self.menuOtp.addSeparator()
         self.menuOtp.addAction(self.actionExport_otpKeys)
@@ -289,5 +296,6 @@ class Ui_MainWindow(object):
         self.actionExport_otpKeys.setText(_translate("MainWindow", "Export Keys"))
         self.actionReset.setText(_translate("MainWindow", "Reset"))
         self.actionUpdate.setText(_translate("MainWindow", "Update"))
+        self.actionSend_Keys.setText(_translate("MainWindow", "Send Keys"))
 from PyQt5 import QtWebEngineWidgets
 import resources_rc

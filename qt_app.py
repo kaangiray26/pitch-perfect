@@ -6,6 +6,7 @@ import json
 import platform
 import shutil
 import time
+import re
 import requests
 from threading import Thread
 from os.path import normpath as n
@@ -14,7 +15,8 @@ from PyQt5.QtWidgets import (
     QTreeWidgetItem, QWidget, QDialogButtonBox,
     QWizard, QWizardPage, QLabel, QVBoxLayout,
     QLineEdit, QHBoxLayout, QFileDialog,
-    QDesktopWidget, QShortcut, QMenu, QRadioButton
+    QDesktopWidget, QShortcut, QMenu, QRadioButton,
+    QCompleter
 )
 from PyQt5.QtCore import QFileInfo, Qt, QUrl, QSize
 from PyQt5.Qt import QDesktopServices, QKeySequence
@@ -294,14 +296,101 @@ class Dialog1(QDialog, wizardErrorDialog):
     def doFalse(self):
         exit()
 
+
+class Window4(QMainWindow, MessageWindow):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setupUi(self)
+        self.retranslateUi(self)
+        self._connectActions()
+        self.encryption = False
+        self.encrypt_checkBox.setEnabled(False)
+        self.sendable = True
+        centerPoint = QDesktopWidget().availableGeometry().center()
+        qtRectangle = self.frameGeometry()
+        qtRectangle.moveCenter(centerPoint)
+        self.move(qtRectangle.topLeft())
+
+        self.outbox = outbox()
+        self.from_addresslabel.setText(self.outbox.from_adress)
+
+    def _connectActions(self):
+        self.actionSend.triggered.connect(self.sendMail)
+        self.actionClose.triggered.connect(self.doClose)
+        self.actionSecurity.triggered.connect(self.checkSecurity)
+        self.encrypt_checkBox.clicked.connect(self.encryptSet)
+        self.plainTextEdit.textChanged.connect(self.upLength)
+
+    def upLength(self):
+        charLen = len(self.plainTextEdit.toPlainText())
+        if charLen >= 400:
+            self.characterLength.setStyleSheet('color: red')
+        elif charLen < 400:
+            self.characterLength.setStyleSheet('color: black')
+        if charLen >= 1024:
+            self.sendable = False
+        elif charLen < 1024:
+            self.sendable = True
+        self.characterLength.setText(str(charLen))
+
+    def sendMail(self):
+        if self.encryption:
+            if not self.sendable:
+                QMessageBox.about(
+                    self, "Error", "Your message is too long, keep it shorter than 512 characters.")
+                return
+        try:
+          self.outbox.send(
+              self.subject_lineEdit.text(),
+              self.to_lineEdit.text(),
+              self.plainTextEdit.toPlainText(),
+              self.encryption
+          )
+        except AuthenticationError:
+            QMessageBox.about(
+                self, "Error", "Provided credentials are incorrect.")
+        self.close()
+
+    def encryptSet(self):
+        self.encryption = self.encrypt_checkBox.isChecked()
+
+    def checkSecurity(self):
+        if len(self.to_lineEdit.text()) > 1:
+            to_address = self.to_lineEdit.text()
+            from_address = self.from_addresslabel.text()
+            self.pgpManager = PGPManager()
+            self.otpManager = OTPManager()
+            pubkey = self.pgpManager.find_public(to_address)
+            otpkey = self.otpManager.find_key(from_address)
+            warning = ""
+            if pubkey != None:
+                pgpMessage = "You have pgp keys for:\n%s\nYou can encrypt this message." % (
+                    to_address)
+                self.encrypt_checkBox.setEnabled(True)
+                self.encrypt_checkBox.setChecked(True)
+                self.encryption = True
+            else:
+                pgpMessage = "You don't have pgp keys for:\n%s\nSorry, you can't encrypt this message!" % (
+                    to_address)
+                self.encrypt_checkBox.setEnabled(False)
+            if otpkey != None:
+                otpMessage = "OTP Keys available."
+            else:
+                otpMessage = "OTP Keys not available.\nPlease check your configuration."
+            warning = pgpMessage + "\n" + otpMessage
+            QMessageBox.about(self, "Security", warning)
+
+    def doClose(self):
+        self.close()
+
 class Window3(QMainWindow, AddressBookWindow):
-    def __init__(self, parent):
+    def __init__(self, parent, contactBook):
         super().__init__(parent)
         self.parent = parent
         self.setupUi(self)
         self.retranslateUi(self)
         self._connectActions()
-        self.contactBook = contactBook()
+        self.contactBook = contactBook
         self.refreshBook()
         self.exportFileType = None
         centerPoint = QDesktopWidget().availableGeometry().center()
@@ -317,11 +406,20 @@ class Window3(QMainWindow, AddressBookWindow):
         self.treeWidget.customContextMenuRequested.connect(self.on_context_menu)
 
     def on_context_menu(self, position):
-        item = self.treeWidget.itemFromIndex(self.treeWidget.selectedIndexes()[0])
+        try:
+            item = self.treeWidget.itemFromIndex(self.treeWidget.selectedIndexes()[0])
+        except IndexError:
+            return
         self.selected = (item.text(0), item.text(1))
         menu = QMenu()
-        menu.addAction("Edit person", self.editContact)
+        menu.addAction("Edit", self.editContact)
+        menu.addAction("Delete", self.deleteContact)
         menu.exec_(self.treeWidget.viewport().mapToGlobal(position))
+
+    def deleteContact(self):
+        self.contactBook.delete_contact(self.selected[1])
+        self.refreshBook()
+        self.parent.getContacts()
 
     def editContact(self):
         self.d = contactDialog(self.selected)
@@ -400,11 +498,13 @@ class Window2(QMainWindow, MessageWindow):
         self.encryption = False
         self.encrypt_checkBox.setEnabled(False)
         self.sendable = True
+        self.contactBook = contactBook()
         centerPoint = QDesktopWidget().availableGeometry().center()
         qtRectangle = self.frameGeometry()
         qtRectangle.moveCenter(centerPoint)
         self.move(qtRectangle.topLeft())
-
+        completer = QCompleter(list(self.contactBook.getContacts().keys()))
+        self.to_lineEdit.setCompleter(completer)
         self.outbox = outbox()
         self.from_addresslabel.setText(self.outbox.from_adress)
         if to_addr != False:
@@ -509,6 +609,7 @@ class Window1(QMainWindow, MainWindow):
             self.getMessages()
             self.getContacts()
             self.decryption = decryption()
+            self.contactBook = contactBook()
             if "--updatedTrue" in arg:
                 QMessageBox.about(self, "Security",
                                   "Updated Successfully!")
@@ -548,6 +649,11 @@ class Window1(QMainWindow, MainWindow):
         self.rightButton.clicked.connect(self.goNext)
         self.leftButton.clicked.connect(self.goBack)
         self.actionUpdate.triggered.connect(self.updateSelf)
+        self.actionSend_Keys.triggered.connect(self.sendKeys)
+
+    def sendKeys(self):
+        self.newWin = Window2(None)
+        self.newWin.show()
 
     def updateSelf(self):
         with open(n(os.path.join("lib","VERSION"))) as v:
@@ -678,6 +784,14 @@ class Window1(QMainWindow, MainWindow):
         self.mail_fromlabel.setText(self.inbox.local_emails[ei][0][1])
         self.mail_date.setText(self.inbox.local_emails[ei][0][2])
 
+        m = re.search('(?<=\<).*(?=\>)', self.inbox.local_emails[ei][0][1])
+        if m:
+            self.contactBook.add_contact(
+                None, m.group(0))
+        else:
+            self.contactBook.add_contact(None, self.inbox.local_emails[ei][0][1])
+        self.getContacts()
+
         if self.attachment_name == None:
             self.attachmentButton.hide()
         else:
@@ -716,7 +830,7 @@ class Window1(QMainWindow, MainWindow):
         self.statusbar.clearMessage()
 
     def openAddressBook(self):
-        self.newWin = Window3(self)
+        self.newWin = Window3(self, self.contactBook)
         self.newWin.show()
 
     def importPGPKeys(self):

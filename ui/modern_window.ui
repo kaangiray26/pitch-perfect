@@ -290,6 +290,8 @@
     <addaction name="actionImport_pgpKeys"/>
     <addaction name="separator"/>
     <addaction name="actionExport_pgpKeys"/>
+    <addaction name="separator"/>
+    <addaction name="actionSend_Keys"/>
    </widget>
    <widget class="QMenu" name="menuOtp">
     <property name="title">
@@ -478,6 +480,15 @@
    </property>
    <property name="text">
     <string>Update</string>
+   </property>
+  </action>
+  <action name="actionSend_Keys">
+   <property name="icon">
+    <iconset resource="resources/resources.qrc">
+     <normaloff>:/Mail Send/mail-send-symbolic.symbolic.png</normaloff>:/Mail Send/mail-send-symbolic.symbolic.png</iconset>
+   </property>
+   <property name="text">
+    <string>Send Keys</string>
    </property>
   </action>
  </widget>

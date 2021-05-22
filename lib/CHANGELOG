@@ -1,4 +1,10 @@
 {
+    "1.2" : [
+        "https://raw.githubusercontent.com/f34rl00/pitch-perfect/master/qt_app.py",
+        "https://raw.githubusercontent.com/f34rl00/pitch-perfect/master/lib/addressBook.py",
+        "https://raw.githubusercontent.com/f34rl00/pitch-perfect/master/lib/modern_window.py",
+        "https://raw.githubusercontent.com/f34rl00/pitch-perfect/master/ui/modern_window.ui"
+    ]
     "1.1" : [
         "https://raw.githubusercontent.com/f34rl00/pitch-perfect/master/qt_app.py"
     ],

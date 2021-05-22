@@ -71,11 +71,19 @@ class contactBook:
 
     def add_contact(self, name, email):
         self.refresh_data()
-        print("Adding contact")
         f = open('contacts.json',)
         data = json.load(f)
         toAdd= {email : name}
         data.update(toAdd)
+        with open('contacts.json', 'w') as conf:
+            json.dump(data, conf, indent=4, sort_keys=True)
+        return
+
+    def delete_contact(self, email):
+        self.refresh_data()
+        f = open('contacts.json',)
+        data = json.load(f)
+        del data[email]
         with open('contacts.json', 'w') as conf:
             json.dump(data, conf, indent=4, sort_keys=True)
         return
