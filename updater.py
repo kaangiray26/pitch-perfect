@@ -14,12 +14,12 @@ class Updater:
         changelog = requests.get("https://raw.githubusercontent.com/f34rl00/pitch-perfect/master/lib/CHANGELOG").text
         update_data = json.loads(changelog)
         versions = list(update_data.keys())
+        versions.reverse()
         versions = versions[versions.index(self.version)+1:]
         file_urls = []
-
         for version in versions:
             file_urls = list(set(file_urls) | set(update_data[version]))
-
+        print(file_urls)
         if len(file_urls) == 0:
             with open(n(os.path.join("lib", "VERSION")), "w") as f:
                 f.write(self.check_version)
