@@ -30,10 +30,10 @@ Nothing much :/
 - [ ] Menubar not visible on mac os
 - [ ] Google application password needed for login
 - [x] Json for otp keys
-- [ ] Program update function
-- [ ] Bug and crash report sender ?
-- [ ] Email drop down recommendations in to: section while writing an email
-- [ ] Automatically add addresses from an email to contacts
+- [x] Program update function
+- [x] Email drop down recommendations in to: section while writing an email
+- [x] Automatically add addresses from an email to contacts
+- [ ] Send pgp public key within the app
 
 ### Have you seen the movie?
 No, I haven't.
