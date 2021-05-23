@@ -623,9 +623,7 @@ class Window1(QMainWindow, MainWindow):
             local = json.load(f)
             data = local['EMAILS']
             for i in data:
-                print(i[0])
                 if i[0] == self.selected:
-                    print("Email found at index:")
                     data.remove(i)
                     with open(os.path.join('archive', 'local.json'), 'w') as conf:
                         local['EMAILS'] = data

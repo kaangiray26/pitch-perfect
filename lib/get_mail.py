@@ -21,6 +21,7 @@ class inbox():
   def __init__(self):
     self.check_config()
     self.refresh_data()
+    self.ini = 1
 
     self.getServerSettings()
     self.mail = imaplib.IMAP4_SSL(self.SERVER)
@@ -47,6 +48,8 @@ class inbox():
     with open(os.path.join('archive','local.json'),) as self.l:
       self.local = json.load(self.l)
       self.local_emails = self.local['EMAILS']
+      if len(self.local_emails) == 0:
+        self.ini = 0
 
   def getServerSettings(self):
     self.emailService = self.credentials("server")
@@ -76,10 +79,11 @@ class inbox():
     self.loaded = False
     self.refresh_data()
     ids = []
-    if self.credentials("init") == 0:
+    if self.credentials("init") == 0 or self.ini == 0:
       arg = 'ALL'
       command = "self.local_emails.append([(mail_subject, mail_from, mail_date, token_urlsafe(2)), content_type, mail_content, x_header, x_magicnum, attachment_name, attachment])"
       self.data['INIT'] = 1
+      self.ini = 1
     else:
       arg = '(UNSEEN)'
       command = "self.local_emails.insert(0,[(mail_subject, mail_from, mail_date, token_urlsafe(2)), content_type, mail_content, x_header, x_magicnum, attachment_name, attachment])"
