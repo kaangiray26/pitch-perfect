@@ -64,6 +64,13 @@ class outbox:
         key, _ = pgpy.PGPKey.from_file(n(os.path.join('pgp_keys',k)))
         return key
 
+  # Find public pgp and filename
+  def find_public_with_name(self, receiver):
+    for k in self.available_keys:
+      if receiver in k and "public" in k:
+        key, _ = pgpy.PGPKey.from_file(n(os.path.join('pgp_keys', k)))
+        return key,k
+
   def find_offset(self, email_addr):
     self.refresh_data()
     for k in self.otp_keys:
@@ -146,3 +153,31 @@ class outbox:
     if isEncrypted:
       self.update_offset(self.from_adress)
     return
+
+  def send_pgp(self, subject, to, content, isEncrypted):
+    m_subject = subject
+    m_sender_email = self.from_adress
+    m_receiver_email = to
+    context = ssl.create_default_context()
+    if self.smtp_encryption == "SSL":
+      server = smtplib.SMTP_SSL(
+          self.smtp_host, self.smtp_port, context=context)
+    elif self.smtp_encryption == "STARTTLS":
+      server = smtplib.SMTP(self.smtp_host, self.smtp_port)
+      server.starttls(context=context)
+    try:
+      server.login(self.credentials("username"), self.credentials("password"))
+    except SMTPAuthenticationError:
+      raise AuthenticationError('Provided credentials are incorrect.')
+    msg = MIMEMultipart()
+    msg['Subject'] = m_subject
+    msg['To'] = m_receiver_email
+    msg['From'] = m_sender_email
+
+    f_content, f_name = self.find_public_with_name(m_sender_email)
+    part = MIMEBase("application", "octet-stream")
+    part.set_payload(str(f_content))
+    part.add_header("Content-Disposition", f"attachment; filename= {f_name}")
+    msg.attach(part)
+    server.sendmail(m_sender_email, m_receiver_email, msg.as_string())
+

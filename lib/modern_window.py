@@ -36,6 +36,7 @@ class Ui_MainWindow(object):
         self.verticalLayout = QtWidgets.QVBoxLayout(self.inbox_tab)
         self.verticalLayout.setObjectName("verticalLayout")
         self.treeWidget = QtWidgets.QTreeWidget(self.inbox_tab)
+        self.treeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.treeWidget.setUniformRowHeights(True)
         self.treeWidget.setItemsExpandable(False)
         self.treeWidget.setWordWrap(False)

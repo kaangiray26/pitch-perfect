@@ -310,6 +310,9 @@ class Window4(QMainWindow, MessageWindow):
         qtRectangle = self.frameGeometry()
         qtRectangle.moveCenter(centerPoint)
         self.move(qtRectangle.topLeft())
+        self.subject_lineEdit.setText("PGP PUBLIC KEY")
+        self.plainTextEdit.setDisabled(True)
+        self.subject_lineEdit.setDisabled(True)
 
         self.outbox = outbox()
         self.from_addresslabel.setText(self.outbox.from_adress)
@@ -317,30 +320,10 @@ class Window4(QMainWindow, MessageWindow):
     def _connectActions(self):
         self.actionSend.triggered.connect(self.sendMail)
         self.actionClose.triggered.connect(self.doClose)
-        self.actionSecurity.triggered.connect(self.checkSecurity)
-        self.encrypt_checkBox.clicked.connect(self.encryptSet)
-        self.plainTextEdit.textChanged.connect(self.upLength)
-
-    def upLength(self):
-        charLen = len(self.plainTextEdit.toPlainText())
-        if charLen >= 400:
-            self.characterLength.setStyleSheet('color: red')
-        elif charLen < 400:
-            self.characterLength.setStyleSheet('color: black')
-        if charLen >= 1024:
-            self.sendable = False
-        elif charLen < 1024:
-            self.sendable = True
-        self.characterLength.setText(str(charLen))
 
     def sendMail(self):
-        if self.encryption:
-            if not self.sendable:
-                QMessageBox.about(
-                    self, "Error", "Your message is too long, keep it shorter than 512 characters.")
-                return
         try:
-          self.outbox.send(
+          self.outbox.send_pgp(
               self.subject_lineEdit.text(),
               self.to_lineEdit.text(),
               self.plainTextEdit.toPlainText(),
@@ -350,35 +333,6 @@ class Window4(QMainWindow, MessageWindow):
             QMessageBox.about(
                 self, "Error", "Provided credentials are incorrect.")
         self.close()
-
-    def encryptSet(self):
-        self.encryption = self.encrypt_checkBox.isChecked()
-
-    def checkSecurity(self):
-        if len(self.to_lineEdit.text()) > 1:
-            to_address = self.to_lineEdit.text()
-            from_address = self.from_addresslabel.text()
-            self.pgpManager = PGPManager()
-            self.otpManager = OTPManager()
-            pubkey = self.pgpManager.find_public(to_address)
-            otpkey = self.otpManager.find_key(from_address)
-            warning = ""
-            if pubkey != None:
-                pgpMessage = "You have pgp keys for:\n%s\nYou can encrypt this message." % (
-                    to_address)
-                self.encrypt_checkBox.setEnabled(True)
-                self.encrypt_checkBox.setChecked(True)
-                self.encryption = True
-            else:
-                pgpMessage = "You don't have pgp keys for:\n%s\nSorry, you can't encrypt this message!" % (
-                    to_address)
-                self.encrypt_checkBox.setEnabled(False)
-            if otpkey != None:
-                otpMessage = "OTP Keys available."
-            else:
-                otpMessage = "OTP Keys not available.\nPlease check your configuration."
-            warning = pgpMessage + "\n" + otpMessage
-            QMessageBox.about(self, "Security", warning)
 
     def doClose(self):
         self.close()
@@ -519,9 +473,9 @@ class Window2(QMainWindow, MessageWindow):
 
     def upLength(self):
         charLen = len(self.plainTextEdit.toPlainText())
-        if charLen >= 400:
+        if charLen >= 960:
             self.characterLength.setStyleSheet('color: red')
-        elif charLen < 400:
+        elif charLen < 960:
             self.characterLength.setStyleSheet('color: black')
         if charLen >= 1024:
             self.sendable = False
@@ -650,9 +604,40 @@ class Window1(QMainWindow, MainWindow):
         self.leftButton.clicked.connect(self.goBack)
         self.actionUpdate.triggered.connect(self.updateSelf)
         self.actionSend_Keys.triggered.connect(self.sendKeys)
+        self.treeWidget.customContextMenuRequested.connect(
+            self.on_context_menu)
+
+    def on_context_menu(self, position):
+        try:
+            item = self.treeWidget.itemFromIndex(
+                self.treeWidget.selectedIndexes()[0])
+        except IndexError:
+            return
+        self.selected = [item.text(0), item.text(1), item.text(2), item.text(3)]
+        menu = QMenu()
+        menu.addAction("Delete", self.deleteEmail)
+        menu.exec_(self.treeWidget.viewport().mapToGlobal(position))
+
+    def deleteEmail(self):
+        with open(os.path.join('archive', 'local.json'),) as f:
+            local = json.load(f)
+            data = local['EMAILS']
+            for i in data:
+                print(i[0])
+                if i[0] == self.selected:
+                    print("Email found at index:")
+                    data.remove(i)
+                    with open(os.path.join('archive', 'local.json'), 'w') as conf:
+                        local['EMAILS'] = data
+                        json.dump(local, conf, indent=4)
+                    self.getMessages()
+                    return
+
+
+
 
     def sendKeys(self):
-        self.newWin = Window2(None)
+        self.newWin = Window4(None)
         self.newWin.show()
 
     def updateSelf(self):
@@ -685,20 +670,29 @@ class Window1(QMainWindow, MainWindow):
     def openAttachment(self):
         if len(self.mail_fromlabel.text()) < 1:
             return
-        path = n(os.path.join("downloaded",self.attachment_name))
-        if isinstance(self.attachment, bytes):
-            writeType = "wb"
+        self.statusbar.showMessage("Getting attachment...")
+        if self.attachmentButton.text() == "Import PGP":
+            path = n(os.path.join("pgp_keys", self.attachment_name))
+            with open(path, "w") as f:
+                f.write(self.attachment)
+                f.close()
+            self.statusbar.showMessage("PGP Key imported.", 3000)
+            
         else:
-            writeType = "w"
-        with open(path, writeType) as f:
-            f.write(self.attachment)
-            f.close()
-        if platform.system() == "Windows":
-            os.startfile(path)
-        elif platform.system() == "Darwin":
-            os.popen("open "+path)
-        else:
-            os.popen("xdg-open "+path)
+            path = n(os.path.join("downloaded",self.attachment_name))
+            if isinstance(self.attachment, bytes):
+                writeType = "wb"
+            else:
+                writeType = "w"
+            with open(path, writeType) as f:
+                f.write(self.attachment)
+                f.close()
+            if platform.system() == "Windows":
+                os.startfile(path)
+            elif platform.system() == "Darwin":
+                os.popen("open "+path)
+            else:
+                os.popen("xdg-open "+path)
 
     def doReset(self):
         self.resetdialog = ResetDialog()
@@ -795,6 +789,8 @@ class Window1(QMainWindow, MainWindow):
         if self.attachment_name == None:
             self.attachmentButton.hide()
         else:
+            if self.attachment_name.endswith("public.asc"):
+                self.attachmentButton.setText("Import PGP")
             self.attachmentButton.show()
 
         if isinstance(self.text, bytes):

@@ -9,6 +9,7 @@ import imaplib
 import json
 import base64
 import datetime
+from secrets import token_urlsafe
 from os.path import normpath as n
 from email.header import Header, decode_header, make_header
 
@@ -31,6 +32,11 @@ class inbox():
     self.doExit = False
 
   def check_config(self):
+    if "local.json" not in os.listdir("archive"):
+      with open(os.path.join('archive', 'local.json'), 'a+') as conf:
+        toAdd = {"EMAILS": [], "LAST_CHECK": 0}
+        json.dump(toAdd, conf, indent=4)
+        
     if "config.json" not in os.listdir("."):
       raise WizardError("You don't have a config file yet.\n Please run the wizard first!")
     return
@@ -72,11 +78,11 @@ class inbox():
     ids = []
     if self.credentials("init") == 0:
       arg = 'ALL'
-      command = "self.local_emails.append([(mail_subject, mail_from, mail_date), content_type, mail_content, x_header, x_magicnum, attachment_name, attachment])"
+      command = "self.local_emails.append([(mail_subject, mail_from, mail_date, token_urlsafe(2)), content_type, mail_content, x_header, x_magicnum, attachment_name, attachment])"
       self.data['INIT'] = 1
     else:
       arg = '(UNSEEN)'
-      command = "self.local_emails.insert(0,[(mail_subject, mail_from, mail_date), content_type, mail_content, x_header, x_magicnum, attachment_name, attachment])"
+      command = "self.local_emails.insert(0,[(mail_subject, mail_from, mail_date, token_urlsafe(2)), content_type, mail_content, x_header, x_magicnum, attachment_name, attachment])"
 
     self.mail.select('inbox')
     status, data = self.mail.search(None, arg)
@@ -119,6 +125,7 @@ class inbox():
           attachment_name = None
           for part in message.walk():
             content_type = part.get_content_type()
+            print(content_type)
             if i == 0:
               if content_type == "multipart/alternative":
                 upperType = "Alternative"
@@ -163,9 +170,11 @@ class inbox():
                 attachment_name = part.get_filename()
                 if attachment_type == "base64":
                   try:
-                    attachment = str(base64.b64decode(attachment_content))
+                    attachment = str(base64.b64decode(attachment_content + b'=='))
                   except base64.binascii.Error:
                     continue
+                elif attachment_type == None:
+                  attachment = attachment_content.decode()
               elif content_type == "application/pdf":
                 attachment_content = part.get_payload()
                 attachment_type = part['Content-Transfer-Encoding']
