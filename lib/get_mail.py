@@ -125,7 +125,6 @@ class inbox():
           attachment_name = None
           for part in message.walk():
             content_type = part.get_content_type()
-            print(content_type)
             if i == 0:
               if content_type == "multipart/alternative":
                 upperType = "Alternative"
