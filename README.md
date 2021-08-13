@@ -9,7 +9,7 @@ One Time Pad Implementation with a GUI
 
 ## Installation
     $ git clone https://github.com/f34rl00/pitch-perfect.git
-    $ cd pitch-perfect-main
+    $ cd pitch-perfect
     $ pip install -r requirements.txt
     
 ## Usage
