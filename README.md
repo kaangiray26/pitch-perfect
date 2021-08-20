@@ -34,6 +34,7 @@ Nothing much :/
 - [x] Email drop down recommendations in to: section while writing an email
 - [x] Automatically add addresses from an email to contacts
 - [ ] Send pgp public key within the app
+- [ ] Read receipts
 
 ### Have you seen the movie?
 No, I haven't.
